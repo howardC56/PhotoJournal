@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import AVFoundation
 
 extension UIView {
 
@@ -96,5 +97,36 @@ extension UIButton {
         layer.add(shake, forKey: nil)
     }
     
+}
+
+extension URL {
+    public func videoPreviewThumbnail() -> UIImage? {
+        let asset = AVAsset(url: self)
+        let assetGenerator = AVAssetImageGenerator(asset: asset)
+        assetGenerator.appliesPreferredTrackTransform = true
+        let timestamp = CMTime(seconds: 1, preferredTimescale: 60)
+        var image: UIImage?
+        do {
+            let cgImage = try assetGenerator.copyCGImage(at: timestamp, actualTime: nil)
+            image = UIImage(cgImage: cgImage)
+        } catch {
+            print("failed to get image from video")
+        }
+        return image
+    }
+}
+
+extension Data {
+    
+    public func convertToURL() -> URL? {
+        let tempURL = URL(fileURLWithPath: NSTemporaryDirectory()).appendingPathComponent("video").appendingPathExtension("mp4")
+        do {
+            try self.write(to: tempURL, options: [.atomic])
+            return tempURL
+        } catch {
+            print("failed to save \(error)")
+        }
+        return nil
+    }
 }
 

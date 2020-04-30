@@ -9,7 +9,12 @@
 import UIKit
 import DataPersistence
 
-class MainViewController: UIViewController {
+class MainViewController: UIViewController, MainViewDelegate {
+    
+    func addTapped() {
+        navigationController?.pushViewController(AddViewController(), animated: true)
+    }
+    
 
     private let dataPersistence = DataPersistence<PhotoObject>(filename: "photos.plist")
     let mainView = MainView()
@@ -25,13 +30,15 @@ class MainViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.navigationController?.navigationBar.isHidden = true
         mainView.collectionview.delegate = self
         mainView.collectionview.dataSource = self
         mainView.collectionview.register(MainCollectionViewCell.self, forCellWithReuseIdentifier: "MainCollectionViewCell")
-        
+        mainView.delegate = self
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        self.navigationController?.navigationBar.isHidden = true
+    }
 
 }
 

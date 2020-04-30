@@ -8,8 +8,14 @@
 
 import UIKit
 
+protocol MainViewDelegate: class {
+    func addTapped()
+}
+
 class MainView: UIView {
 
+    weak var delegate: MainViewDelegate?
+    
     public lazy var collectionview: UICollectionView = {
            let layout = UICollectionViewFlowLayout()
            layout.minimumLineSpacing = 20
@@ -51,7 +57,7 @@ class MainView: UIView {
     }
     
     @objc func create(_ sender: UIBarButtonItem) {
-        
+        delegate?.addTapped()
     }
     
     private func toolBarSetup() {
