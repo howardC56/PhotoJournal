@@ -9,13 +9,13 @@
 import UIKit
 import DataPersistence
 
-final class MainViewController: UIViewController, MainViewDelegate {
+final class MainViewController: UIViewController, MainViewDelegate, AddViewControllerDelegate {
     
     func addTapped() {
         navigationController?.pushViewController(AddViewController(dataPersistence: dataPersistence), animated: true)
     }
     
-    private let dataPersistence = DataPersistence<PhotoObject>(filename: "photos.plist")
+   private let dataPersistence = DataPersistence<PhotoObject>(filename: "photos.plist")
    private let mainView = MainView()
     var photos = [PhotoObject]() {
         didSet {
@@ -35,11 +35,16 @@ final class MainViewController: UIViewController, MainViewDelegate {
         mainView.collectionview.dataSource = self
         mainView.collectionview.register(MainCollectionViewCell.self, forCellWithReuseIdentifier: "MainCollectionViewCell")
         mainView.delegate = self
+        dataPersistence.delegate = self
         getPhotoObjects()
     }
     
     override func viewWillAppear(_ animated: Bool) {
         self.navigationController?.navigationBar.isHidden = true
+    }
+    
+    func didUpdate(viewController: AddViewController) {
+        getPhotoObjects()
     }
     
     private func getPhotoObjects() {
@@ -70,6 +75,7 @@ extension MainViewController: UICollectionViewDelegateFlowLayout, UICollectionVi
         let saved = photos[indexPath.row]
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "MainCollectionViewCell", for: indexPath) as? MainCollectionViewCell else { fatalError() }
         cell.configureCell(object: saved)
+        cell.delegate = self
         return cell
     }
     
@@ -88,10 +94,12 @@ extension MainViewController: DataPersistenceDelegate {
 
 extension MainViewController: MainCollectionViewCellDelegate {
     func didPressMoreOptionsButton(cell: MainCollectionViewCell, object: PhotoObject) {
-        let alertController = UIAlertController(title: "Choose", message: "Book's Destiny", preferredStyle: .actionSheet)
+        let alertController = UIAlertController(title: "Choose", message: "Object's Destiny", preferredStyle: .actionSheet)
         let cancelAction = UIAlertAction(title: "Cancel", style: .cancel)
         let editAction = UIAlertAction(title: "Edit", style: .default) { (alertAction) in
-            self.navigationController?.pushViewController(AddViewController(dataPersistence: self.dataPersistence, object: object), animated: true)
+            let vc = AddViewController(dataPersistence: self.dataPersistence, object: object)
+            vc.delegate = self
+            self.navigationController?.pushViewController(vc, animated: true)
         }
         let delete = UIAlertAction(title: "Throw Out", style: .destructive) { (alertAction) in
             self.deleteObject(object)
@@ -99,8 +107,8 @@ extension MainViewController: MainCollectionViewCellDelegate {
         let image = UIImage(systemName: "trash")
         let editImage = UIImage(systemName: "pencil")
         delete.setValue(image, forKey: "image")
-        editAction.setValue(editImage, forKey: "editImage")
-        alertController.addAction(delete)
+        editAction.setValue(editImage, forKey: "image")
+        alertController.addAction(editAction)
         alertController.addAction(cancelAction)
         alertController.addAction(delete)
         DispatchQueue.main.async { [weak self] in

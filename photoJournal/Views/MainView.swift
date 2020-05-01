@@ -31,9 +31,7 @@ final class MainView: UIView {
         let tool = UIToolbar()
         var items = [UIBarButtonItem]()
         items.append(UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil))
-        items.append(
-            UIBarButtonItem(image: UIImage(systemName: "plus"), style: .plain, target: nil, action: #selector(create(_:)))
-        )
+        items.append(UIBarButtonItem(image: UIImage(systemName: "plus"), style: .plain, target: nil, action: #selector(create(_:))))
         items.append(UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil))
         tool.barTintColor = .purple
         tool.tintColor = .green

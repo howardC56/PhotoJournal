@@ -18,7 +18,6 @@ final class MainCollectionViewCell: UICollectionViewCell {
     
     weak var delegate: MainCollectionViewCellDelegate?
     private var currentObject: PhotoObject!
-    var playPause = false
     var player: AVPlayer!
     
     public lazy var imageView: UIImageView = {
@@ -62,7 +61,7 @@ final class MainCollectionViewCell: UICollectionViewCell {
         let button = UIButton(frame: CGRect(x: 10, y: 10, width: 40, height: 40))
         button.backgroundColor = .clear
         button.layer.cornerRadius = 20
-        button.setBackgroundImage(UIImage(systemName: "xmark.circle"), for: .normal)
+        button.setBackgroundImage(UIImage(systemName: "ellipsis.circle"), for: .normal)
         button.tintColor = .black
         button.addTarget(self, action: #selector(moreButtonPressed), for: .touchUpInside)
         return button
@@ -84,7 +83,7 @@ final class MainCollectionViewCell: UICollectionViewCell {
     
     private func commonSetup() {
         imageViewConstraints()
-        deleteButtonConstraints()
+        moreOptionsButtonConstraints()
         titleLabelConstraints()
         descriptionLabelConstraints()
         setupVideoView()
@@ -98,9 +97,13 @@ final class MainCollectionViewCell: UICollectionViewCell {
     }
     
     public func configureCell(object: PhotoObject) {
-        imageView.image = UIImage(data: object.imageData)
-        
-        if let videoURL = object.videoData?.convertToURL() {
+        currentObject = object
+        imageView.image = UIImage(data: currentObject.imageData)
+        titleLabel.text = currentObject.title
+        descriptionLabel.text = currentObject.description
+        videoView.isHidden = true
+        imageView.isHidden = false
+        if let videoURL = currentObject.videoData?.convertToURL() {
             videoView.isHidden = false
             imageView.isHidden = true
             player = AVPlayer(url: videoURL)
@@ -110,18 +113,17 @@ final class MainCollectionViewCell: UICollectionViewCell {
             videoView.layer.addSublayer(playerLayer)
             let tap: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(videoPlay))
             videoView.addGestureRecognizer(tap)
-            titleLabel.text = object.title
-            descriptionLabel.text = object.description
-           
     }
     }
     
     @objc func videoPlay() {
-        playPause.toggle()
-        if playPause {
-         player.play()
+        var playing = false
+        if playing == false {
+        player.play()
+            playing.toggle()
         } else {
             player.pause()
+            playing.toggle()
         }
     }
     
@@ -131,7 +133,7 @@ final class MainCollectionViewCell: UICollectionViewCell {
         NSLayoutConstraint.activate([imageView.centerXAnchor.constraint(equalTo: centerXAnchor), imageView.topAnchor.constraint(equalTo: topAnchor, constant: 10), imageView.widthAnchor.constraint(equalToConstant: 200), imageView.heightAnchor.constraint(equalToConstant: 333)])
     }
     
-    private func deleteButtonConstraints() {
+    private func moreOptionsButtonConstraints() {
         addSubview(moreOptionsButton)
         moreOptionsButton.anchor(top: imageView.topAnchor, right: rightAnchor, paddingRight: 10, width: 24, height: 24)
     }
@@ -150,6 +152,6 @@ final class MainCollectionViewCell: UICollectionViewCell {
     private func setupVideoView() {
     addSubview(videoView)
        videoView.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([videoView.centerXAnchor.constraint(equalTo: centerXAnchor), videoView.topAnchor.constraint(equalTo: topAnchor, constant: 10), videoView.leftAnchor.constraint(equalTo: leftAnchor, constant: 10), videoView.rightAnchor.constraint(equalTo: rightAnchor, constant: -10), videoView.heightAnchor.constraint(equalToConstant: 333)])
+        NSLayoutConstraint.activate([videoView.centerXAnchor.constraint(equalTo: centerXAnchor), videoView.topAnchor.constraint(equalTo: topAnchor, constant: 35), videoView.leftAnchor.constraint(equalTo: leftAnchor, constant: 10), videoView.rightAnchor.constraint(equalTo: rightAnchor, constant: -10), videoView.heightAnchor.constraint(equalToConstant: 300)])
     }
 }

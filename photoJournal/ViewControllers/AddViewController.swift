@@ -9,9 +9,14 @@
 import UIKit
 import DataPersistence
 
+protocol AddViewControllerDelegate: class {
+    func didUpdate(viewController: AddViewController)
+}
+
 final class AddViewController: UIViewController {
     
-   private let addView = AddView()
+    weak var delegate: AddViewControllerDelegate?
+    private let addView = AddView()
     public var mediaData: Data?
     public var videoURL: URL?
     public var videoData: Data?
@@ -72,11 +77,14 @@ final class AddViewController: UIViewController {
           }
         }
         
-        let photoObject = PhotoObject(imageData: safeMediaData, videoData: videoData, description: descriptionText, date: Date(), title: titleText)
+        let newPhotoObject = PhotoObject(imageData: safeMediaData, videoData: videoData, description: descriptionText, date: Date(), title: titleText, id: UUID().uuidString)
         if updateBool == false {
-       try? dataPersistence.createItem(photoObject)
+       try? dataPersistence.createItem(newPhotoObject)
         } else {
-        updateObject()
+            if let object = photoObject {
+            let updatePhotoObject = PhotoObject(imageData: safeMediaData, videoData: videoData, description: descriptionText, date: Date(), title: titleText, id: object.id)
+                updateObject(object: updatePhotoObject)
+            }
         }
         navigationController?.popViewController(animated: true)
             
@@ -86,17 +94,10 @@ final class AddViewController: UIViewController {
         navigationController?.popViewController(animated: true)
     }
     
-    private func updateObject() {
-        if let object = photoObject {
-            var objects = [PhotoObject]()
-            do {
-                objects = try dataPersistence.loadItems()
-            } catch {
-                showAlert(title: "failed to update", message: "\(error.localizedDescription)")
-            }
-            if let index = objects.firstIndex(of: object) {
-                dataPersistence.update(object, at: index)
-            }
+    private func updateObject(object: PhotoObject) {
+        if let oldObject = photoObject {
+                dataPersistence.update(oldObject, with: object)
+            delegate?.didUpdate(viewController: self)
         }
     }
     

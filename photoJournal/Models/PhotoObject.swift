@@ -14,5 +14,5 @@ struct  PhotoObject: Codable & Equatable {
       let description: String
       let date: Date
       let title: String
-      let id = UUID().uuidString
+      let id: String
 }
