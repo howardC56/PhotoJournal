@@ -18,7 +18,8 @@ final class MainCollectionViewCell: UICollectionViewCell {
     
     weak var delegate: MainCollectionViewCellDelegate?
     private var currentObject: PhotoObject!
-    var player: AVPlayer!
+    var player: AVPlayer?
+    var playing = false
     
     public lazy var imageView: UIImageView = {
         let image = UIImageView()
@@ -122,13 +123,14 @@ final class MainCollectionViewCell: UICollectionViewCell {
     }
     
     @objc func videoPlay() {
-        var playing = false
+        if let player = player {
         if playing == false {
         player.play()
-            playing.toggle()
+        playing.toggle()
         } else {
-            player.pause()
-            playing.toggle()
+        player.pause()
+        playing.toggle()
+        }
         }
     }
     

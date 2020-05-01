@@ -25,6 +25,7 @@ final class MainViewController: UIViewController, MainViewDelegate, AddViewContr
         }
     }
     
+    
     override func loadView() {
         view = mainView
     }
@@ -77,6 +78,13 @@ extension MainViewController: UICollectionViewDelegateFlowLayout, UICollectionVi
         cell.configureCell(object: saved)
         cell.delegate = self
         return cell
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didEndDisplaying cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
+        if let cell = cell as? MainCollectionViewCell {
+            cell.player?.pause()
+            cell.playing = false
+        }
     }
     
     
