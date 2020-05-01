@@ -41,6 +41,7 @@ final class AddViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         updatePicked()
+        navigationController?.navigationBar.tintColor = .green
         navigationItem.rightBarButtonItem = save
         navigationItem.leftBarButtonItem = customBackButton
         self.navigationController?.navigationBar.isHidden = false

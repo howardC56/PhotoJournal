@@ -35,16 +35,15 @@ final class MainCollectionViewCell: UICollectionViewCell {
         return view
     }()
     
-    public lazy var descriptionLabel: UILabel = {
-        let label = UILabel()
+    public lazy var descriptionLabel: UITextView = {
+        let label = UITextView()
         label.font = .systemFont(ofSize: 14)
-        label.textAlignment = .center
         label.textColor = .black
         label.backgroundColor = .white
-        label.adjustsFontSizeToFitWidth = true
-        label.numberOfLines = 0
+        label.textContainerInset = UIEdgeInsets(top: 0, left: 10, bottom: 0, right: 10)
         label.layer.borderWidth = 0.5
         label.layer.cornerRadius = 10
+        label.isEditable = false
         label.layer.borderColor = UIColor.black.cgColor
         label.text = "SimsSImsSimsSimsSImsSims SimsSImsSims SimsSImsSims SimsSImsSims SimsSImsSims SimsSImsSims SimsSImsSims SimsSImsSims SimsSImsSims SimsSImsSims SimsSImsSims SimsSImsSimsSimsSImsSimsSimsSImsSimsSimsSImsSims"
         return label
@@ -105,7 +104,7 @@ final class MainCollectionViewCell: UICollectionViewCell {
         currentObject = object
         imageView.image = UIImage(data: currentObject.imageData)
         titleLabel.text = currentObject.title
-        descriptionLabel.text = currentObject.description
+        descriptionLabel.text = "Date Posted: \(currentObject.date.convertToString()) \n\(currentObject.description)"
         videoView.isHidden = true
         imageView.isHidden = false
         if let videoURL = currentObject.videoData?.convertToURL() {
@@ -115,6 +114,7 @@ final class MainCollectionViewCell: UICollectionViewCell {
             let playerLayer = AVPlayerLayer(player: player)
             playerLayer.frame = videoView.bounds
             playerLayer.videoGravity = .resizeAspect
+            playerLayer.masksToBounds = true
             videoView.layer.addSublayer(playerLayer)
             let tap: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(videoPlay))
             videoView.addGestureRecognizer(tap)

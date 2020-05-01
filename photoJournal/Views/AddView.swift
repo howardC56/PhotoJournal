@@ -48,7 +48,7 @@ final class AddView: UIView {
     private lazy var descriptionLabel: UILabel = {
         let label = UILabel()
         label.textColor = .black
-        label.backgroundColor = .white
+        label.backgroundColor = .purple
         label.text = "Description:"
         return label
     }()
@@ -102,7 +102,7 @@ final class AddView: UIView {
     }
     
     private func commonInit() {
-        backgroundColor = .white
+        backgroundColor = .purple
         if !UIImagePickerController.isSourceTypeAvailable(.camera) {
             toolBar.items![0].isEnabled = false
                      }

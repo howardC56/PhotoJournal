@@ -130,3 +130,13 @@ extension Data {
     }
 }
 
+extension Date{
+    
+    func convertToString() -> String {
+        let dateFormatter = DateFormatter()
+        
+        dateFormatter.dateFormat = "EEEE, MM/dd/yyyy"
+        
+        return dateFormatter.string(from: self)
+    }
+}
