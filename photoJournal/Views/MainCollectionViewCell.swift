@@ -18,30 +18,31 @@ final class MainCollectionViewCell: UICollectionViewCell {
     
     weak var delegate: MainCollectionViewCellDelegate?
     private var currentObject: PhotoObject!
-    var player: AVPlayer?
-    var playing = false
+    //var player: AVPlayer?
+    //var playing = false
     
-    override func prepareForReuse() {
-        super.prepareForReuse()
-        playing = false
-        player = nil
-    }
+//    override func prepareForReuse() {
+//        super.prepareForReuse()
+//        playing = false
+//        player = nil
+//    }
     
     public lazy var imageView: UIImageView = {
         let image = UIImageView()
         image.clipsToBounds = true
         image.layer.cornerRadius = 10
+        image.contentMode = .scaleAspectFit
         image.backgroundColor = .white
         image.image = UIImage(systemName: "photo")
         return image
     }()
     
-    public lazy var videoView: UIView = {
-        let view = UIView()
-        view.isHidden = true
-        self.backgroundColor = .clear
-        return view
-    }()
+//    public lazy var videoView: UIView = {
+//        let view = UIView()
+//        view.isHidden = true
+//        self.backgroundColor = .clear
+//        return view
+//    }()
     
     public lazy var descriptionLabel: UITextView = {
         let label = UITextView()
@@ -98,7 +99,7 @@ final class MainCollectionViewCell: UICollectionViewCell {
         moreOptionsButtonConstraints()
         titleLabelConstraints()
         descriptionLabelConstraints()
-        setupVideoView()
+        //setupVideoView()
         layer.cornerRadius = 10
         layer.shadowColor = UIColor.black.cgColor
         layer.shadowRadius = 5
@@ -113,38 +114,38 @@ final class MainCollectionViewCell: UICollectionViewCell {
         imageView.image = UIImage(data: currentObject.imageData)
         titleLabel.text = currentObject.title
         descriptionLabel.text = "Date Posted: \(currentObject.date.convertToString()) \n\(currentObject.description)"
-        videoView.isHidden = true
-        imageView.isHidden = false
-        if let videoURL = currentObject.videoData?.convertToURL() {
-            videoView.isHidden = false
-            imageView.isHidden = true
-            player = AVPlayer(url: videoURL)
-            let playerLayer = AVPlayerLayer(player: player)
-            playerLayer.frame = videoView.bounds
-            playerLayer.videoGravity = .resizeAspect
-            playerLayer.masksToBounds = true
-            videoView.layer.addSublayer(playerLayer)
-            let tap: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(videoPlay))
-            videoView.addGestureRecognizer(tap)
-    }
+//        videoView.isHidden = true
+//        imageView.isHidden = false
+//        if let videoURL = currentObject.videoData?.convertToURL() {
+//            videoView.isHidden = false
+//            imageView.isHidden = true
+//            player = AVPlayer(url: videoURL)
+//            let playerLayer = AVPlayerLayer(player: player)
+//            playerLayer.frame = videoView.bounds
+//            playerLayer.videoGravity = .resizeAspect
+//            playerLayer.masksToBounds = true
+//            videoView.layer.addSublayer(playerLayer)
+//            let tap: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(videoPlay))
+//            videoView.addGestureRecognizer(tap)
+//    }
     }
     
-    @objc func videoPlay() {
-        if let player = player {
-        if playing == false {
-        player.play()
-        playing.toggle()
-        } else {
-        player.pause()
-        playing.toggle()
-        }
-        }
-    }
+//    @objc func videoPlay() {
+//        if let player = player {
+//        if playing == false {
+//        player.play()
+//        playing.toggle()
+//        } else {
+//        player.pause()
+//        playing.toggle()
+//        }
+//        }
+//    }
     
     private func imageViewConstraints() {
         addSubview(imageView)
         imageView.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([imageView.centerXAnchor.constraint(equalTo: centerXAnchor), imageView.topAnchor.constraint(equalTo: topAnchor, constant: 10), imageView.widthAnchor.constraint(equalToConstant: 200), imageView.heightAnchor.constraint(equalToConstant: 333)])
+        NSLayoutConstraint.activate([imageView.centerXAnchor.constraint(equalTo: centerXAnchor), imageView.topAnchor.constraint(equalTo: topAnchor, constant: 10), imageView.widthAnchor.constraint(equalToConstant: 255), imageView.heightAnchor.constraint(equalToConstant: 350)])
     }
     
     private func moreOptionsButtonConstraints() {
@@ -163,9 +164,9 @@ final class MainCollectionViewCell: UICollectionViewCell {
         descriptionLabel.anchor(top: titleLabel.bottomAnchor, left: leftAnchor, bottom: bottomAnchor, right: rightAnchor, paddingTop: 10, paddingLeft: 10, paddingBottom: 10, paddingRight: 10)
     }
     
-    private func setupVideoView() {
-    addSubview(videoView)
-       videoView.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([videoView.centerXAnchor.constraint(equalTo: centerXAnchor), videoView.topAnchor.constraint(equalTo: topAnchor, constant: 35), videoView.leftAnchor.constraint(equalTo: leftAnchor, constant: 10), videoView.rightAnchor.constraint(equalTo: rightAnchor, constant: -10), videoView.heightAnchor.constraint(equalToConstant: 300)])
-    }
+//    private func setupVideoView() {
+//    addSubview(videoView)
+//       videoView.translatesAutoresizingMaskIntoConstraints = false
+//        NSLayoutConstraint.activate([videoView.centerXAnchor.constraint(equalTo: centerXAnchor), videoView.topAnchor.constraint(equalTo: topAnchor, constant: 35), videoView.leftAnchor.constraint(equalTo: leftAnchor, constant: 10), videoView.rightAnchor.constraint(equalTo: rightAnchor, constant: -10), videoView.heightAnchor.constraint(equalToConstant: 300)])
+//    }
 }

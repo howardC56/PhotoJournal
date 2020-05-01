@@ -18,8 +18,8 @@ final class AddViewController: UIViewController {
     weak var delegate: AddViewControllerDelegate?
     private let addView = AddView()
     public var mediaData: Data?
-    public var videoURL: URL?
-    public var videoData: Data?
+    //public var videoURL: URL?
+    //public var videoData: Data?
     private var photoObject: PhotoObject?
     private var dataPersistence: DataPersistence<PhotoObject>
     private var updateBool = false
@@ -70,20 +70,20 @@ final class AddViewController: UIViewController {
             showAlert(title: "Fill Missing Fields", message: "Fill All Fields")
             return
         }
-        if let video = videoURL {
-          do {
-             videoData = try Data(contentsOf: video)
-          } catch {
-            print("failed to convert url to data with error: \(error)")
-          }
-        }
+//        if let video = videoURL {
+//          do {
+//             videoData = try Data(contentsOf: video)
+//          } catch {
+//            print("failed to convert url to data with error: \(error)")
+//          }
+//        }
         
-        let newPhotoObject = PhotoObject(imageData: safeMediaData, videoData: videoData, description: descriptionText, date: Date(), title: titleText, id: UUID().uuidString)
+        let newPhotoObject = PhotoObject(imageData: safeMediaData, description: descriptionText, date: Date(), title: titleText, id: UUID().uuidString)
         if updateBool == false {
        try? dataPersistence.createItem(newPhotoObject)
         } else {
             if let object = photoObject {
-            let updatePhotoObject = PhotoObject(imageData: safeMediaData, videoData: videoData, description: descriptionText, date: Date(), title: titleText, id: object.id)
+            let updatePhotoObject = PhotoObject(imageData: safeMediaData, description: descriptionText, date: Date(), title: titleText, id: object.id)
                 updateObject(object: updatePhotoObject)
             }
         }
@@ -120,25 +120,25 @@ final class AddViewController: UIViewController {
 
 extension AddViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
-        guard let mediaType = info[UIImagePickerController.InfoKey.mediaType] as? String else { return }
-        switch mediaType {
-               case "public.image":
+//        guard let mediaType = info[UIImagePickerController.InfoKey.mediaType] as? String else { return }
+//        switch mediaType {
+//               case "public.image":
                    if let originalImage = info[UIImagePickerController.InfoKey.originalImage] as? UIImage, let imageData = originalImage.jpegData(compressionQuality: 1.0) {
                     addView.imageView.image = originalImage
                     mediaData = imageData
-                    videoURL = nil
+                    //videoURL = nil
                    }
-                   
-               case  "public.movie":
-                   if let mediaURL = info[UIImagePickerController.InfoKey.mediaURL] as? URL,
-                       let image = mediaURL.videoPreviewThumbnail(), let imageData = image.jpegData(compressionQuality: 1.0) {
-                    addView.imageView.image = image
-                    videoURL = mediaURL
-                    mediaData = imageData
-                   }
-               default:
-                   print("unsupported media type")
-               }
+//
+//               case  "public.movie":
+//                   if let mediaURL = info[UIImagePickerController.InfoKey.mediaURL] as? URL,
+//                       let image = mediaURL.videoPreviewThumbnail(), let imageData = image.jpegData(compressionQuality: 1.0) {
+//                    addView.imageView.image = image
+//                    videoURL = mediaURL
+//                    mediaData = imageData
+//                   }
+//               default:
+//                   print("unsupported media type")
+//               }
                picker.dismiss(animated: true)
     }
 }

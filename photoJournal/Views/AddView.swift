@@ -20,7 +20,7 @@ final class AddView: UIView {
     public lazy var imagePickerController: UIImagePickerController = {
            let mediaTypes = UIImagePickerController.availableMediaTypes(for: .photoLibrary)
            let pickerController = UIImagePickerController()
-           pickerController.mediaTypes = mediaTypes ?? ["kUTTypeImage"]
+           //pickerController.mediaTypes = mediaTypes ?? ["kUTTypeImage"]
            return pickerController
        }()
     

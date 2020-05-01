@@ -80,12 +80,12 @@ extension MainViewController: UICollectionViewDelegateFlowLayout, UICollectionVi
         return cell
     }
     
-    func collectionView(_ collectionView: UICollectionView, didEndDisplaying cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
-        if let cell = cell as? MainCollectionViewCell {
-            cell.player?.pause()
-            cell.playing = false
-        }
-    }
+//    func collectionView(_ collectionView: UICollectionView, didEndDisplaying cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
+//        if let cell = cell as? MainCollectionViewCell {
+//            cell.player?.pause()
+//            cell.playing = false
+//        }
+//    }
     
     
 }
