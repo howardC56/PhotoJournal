@@ -31,7 +31,7 @@ final class MainCollectionViewCell: UICollectionViewCell {
         let image = UIImageView()
         image.clipsToBounds = true
         image.layer.cornerRadius = 10
-        image.backgroundColor = .clear
+        image.backgroundColor = .white
         image.image = UIImage(systemName: "photo")
         return image
     }()
@@ -39,6 +39,7 @@ final class MainCollectionViewCell: UICollectionViewCell {
     public lazy var videoView: UIView = {
         let view = UIView()
         view.isHidden = true
+        self.backgroundColor = .clear
         return view
     }()
     
