@@ -13,7 +13,7 @@ protocol AddViewDelegate: class {
     func photoLibraryPressed()
 }
 
-class AddView: UIView {
+final class AddView: UIView {
     
     weak var delegate: AddViewDelegate?
     
@@ -26,17 +26,14 @@ class AddView: UIView {
     
     public lazy var toolBar: UIToolbar = {
         let tool = UIToolbar()
-        var items = [UIBarButtonItem]()
-        items.append(
-            UIBarButtonItem(image: UIImage(systemName: "camera"), style: .plain, target: nil, action: #selector(presentCamera(_:)))
-        )
-        items.append(UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil))
-        items.append(
-            UIBarButtonItem(image: UIImage(systemName: "photo.on.rectangle"), style: .plain, target: nil, action: #selector(presentPhotoLib(_:)))
-        )
+        let camera = UIBarButtonItem(image: UIImage(systemName: "camera"), style: .plain, target: nil, action: #selector(presentCamera(_:)))
+        
+        let flexSpace = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
+        let photoLibrary = UIBarButtonItem(image: UIImage(systemName: "photo.on.rectangle"), style: .plain, target: nil, action: #selector(presentPhotoLib(_:)))
+        
         tool.barTintColor = .purple
         tool.tintColor = .green
-        tool.setItems(items, animated: true)
+        tool.items = [camera, flexSpace, photoLibrary]
         return tool
     }()
     
@@ -100,6 +97,9 @@ class AddView: UIView {
     
     private func commonInit() {
         backgroundColor = .white
+        if !UIImagePickerController.isSourceTypeAvailable(.camera) {
+            toolBar.items![0].isEnabled = false
+                     }
         toolBarSetup()
         titleLabelSetup()
         descriptionLabelSetup()

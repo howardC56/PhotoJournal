@@ -7,9 +7,19 @@
 //
 
 import UIKit
+import AVFoundation
+import AVKit
 
-class MainCollectionViewCell: UICollectionViewCell {
-    private var currentBook: PhotoObject!
+protocol MainCollectionViewCellDelegate: class {
+    func didPressMoreOptionsButton(cell: MainCollectionViewCell, object: PhotoObject)
+}
+
+final class MainCollectionViewCell: UICollectionViewCell {
+    
+    weak var delegate: MainCollectionViewCellDelegate?
+    private var currentObject: PhotoObject!
+    var playPause = false
+    var player: AVPlayer!
     
     public lazy var imageView: UIImageView = {
         let image = UIImageView()
@@ -17,6 +27,12 @@ class MainCollectionViewCell: UICollectionViewCell {
         image.layer.cornerRadius = 10
         image.image = UIImage(systemName: "photo")
         return image
+    }()
+    
+    public lazy var videoView: UIView = {
+        let view = UIView()
+        view.isHidden = true
+        return view
     }()
     
     public lazy var descriptionLabel: UILabel = {
@@ -54,6 +70,7 @@ class MainCollectionViewCell: UICollectionViewCell {
     
     @objc func moreButtonPressed(_ sender: UIButton) {
         animateButtonView(sender)
+        delegate?.didPressMoreOptionsButton(cell: self, object: currentObject)
     }
     
     override init(frame: CGRect) {
@@ -70,6 +87,7 @@ class MainCollectionViewCell: UICollectionViewCell {
         deleteButtonConstraints()
         titleLabelConstraints()
         descriptionLabelConstraints()
+        setupVideoView()
         layer.cornerRadius = 10
         layer.shadowColor = UIColor.black.cgColor
         layer.shadowRadius = 5
@@ -77,6 +95,34 @@ class MainCollectionViewCell: UICollectionViewCell {
         layer.shadowOpacity = 0.5
         layer.shadowPath = UIBezierPath(rect: bounds).cgPath
         backgroundColor = .white
+    }
+    
+    public func configureCell(object: PhotoObject) {
+        imageView.image = UIImage(data: object.imageData)
+        
+        if let videoURL = object.videoData?.convertToURL() {
+            videoView.isHidden = false
+            imageView.isHidden = true
+            player = AVPlayer(url: videoURL)
+            let playerLayer = AVPlayerLayer(player: player)
+            playerLayer.frame = videoView.bounds
+            playerLayer.videoGravity = .resizeAspect
+            videoView.layer.addSublayer(playerLayer)
+            let tap: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(videoPlay))
+            videoView.addGestureRecognizer(tap)
+            titleLabel.text = object.title
+            descriptionLabel.text = object.description
+           
+    }
+    }
+    
+    @objc func videoPlay() {
+        playPause.toggle()
+        if playPause {
+         player.play()
+        } else {
+            player.pause()
+        }
     }
     
     private func imageViewConstraints() {
@@ -99,5 +145,11 @@ class MainCollectionViewCell: UICollectionViewCell {
     private func descriptionLabelConstraints() {
         addSubview(descriptionLabel)
         descriptionLabel.anchor(top: titleLabel.bottomAnchor, left: leftAnchor, bottom: bottomAnchor, right: rightAnchor, paddingTop: 10, paddingLeft: 10, paddingBottom: 10, paddingRight: 10)
+    }
+    
+    private func setupVideoView() {
+    addSubview(videoView)
+       videoView.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([videoView.centerXAnchor.constraint(equalTo: centerXAnchor), videoView.topAnchor.constraint(equalTo: topAnchor, constant: 10), videoView.leftAnchor.constraint(equalTo: leftAnchor, constant: 10), videoView.rightAnchor.constraint(equalTo: rightAnchor, constant: -10), videoView.heightAnchor.constraint(equalToConstant: 333)])
     }
 }

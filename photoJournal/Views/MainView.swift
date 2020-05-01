@@ -12,7 +12,7 @@ protocol MainViewDelegate: class {
     func addTapped()
 }
 
-class MainView: UIView {
+final class MainView: UIView {
 
     weak var delegate: MainViewDelegate?
     

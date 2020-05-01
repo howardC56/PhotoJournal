@@ -7,12 +7,27 @@
 //
 
 import UIKit
+import DataPersistence
 
-class AddViewController: UIViewController {
+final class AddViewController: UIViewController {
     
-    let addView = AddView()
-    private var mediaData: Data?
-    //private var imagePickerController = UIImagePickerController()
+   private let addView = AddView()
+    public var mediaData: Data?
+    public var videoURL: URL?
+    public var videoData: Data?
+    private var photoObject: PhotoObject?
+    private var dataPersistence: DataPersistence<PhotoObject>
+    private var updateBool = false
+    
+    init(dataPersistence: DataPersistence<PhotoObject>, object: PhotoObject? = nil) {
+        self.dataPersistence = dataPersistence
+        self.photoObject = object
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
     override func loadView() {
         view = addView
@@ -20,8 +35,8 @@ class AddViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        updatePicked()
         navigationItem.rightBarButtonItem = save
-        navigationItem.title = "Create"
         navigationItem.leftBarButtonItem = customBackButton
         self.navigationController?.navigationBar.isHidden = false
         addView.imagePickerController.delegate = self
@@ -49,13 +64,55 @@ class AddViewController: UIViewController {
             showAlert(title: "Fill Missing Fields", message: "Fill All Fields")
             return
         }
-        let photoObject = PhotoObject(imageData: safeMediaData, description: descriptionText, date: Date(), title: titleText)
+        if let video = videoURL {
+          do {
+             videoData = try Data(contentsOf: video)
+          } catch {
+            print("failed to convert url to data with error: \(error)")
+          }
+        }
         
+        let photoObject = PhotoObject(imageData: safeMediaData, videoData: videoData, description: descriptionText, date: Date(), title: titleText)
+        if updateBool == false {
+       try? dataPersistence.createItem(photoObject)
+        } else {
+        updateObject()
+        }
         navigationController?.popViewController(animated: true)
+            
     }
     
     @objc func back(_ sender: UIBarButtonItem) {
         navigationController?.popViewController(animated: true)
+    }
+    
+    private func updateObject() {
+        if let object = photoObject {
+            var objects = [PhotoObject]()
+            do {
+                objects = try dataPersistence.loadItems()
+            } catch {
+                showAlert(title: "failed to update", message: "\(error.localizedDescription)")
+            }
+            if let index = objects.firstIndex(of: object) {
+                dataPersistence.update(object, at: index)
+            }
+        }
+    }
+    
+    private func updatePicked() {
+        if photoObject != nil {
+            updateBool = true
+            addView.titleLabel.text = photoObject?.title
+            addView.descriptionText.text = photoObject?.description
+            if let photoData = photoObject?.imageData {
+            mediaData = photoData
+            addView.imageView.image = UIImage(data: photoData)
+            }
+            navigationItem.title = "Update"
+        } else {
+            navigationItem.title = "Create"
+        }
     }
 }
 
@@ -67,12 +124,14 @@ extension AddViewController: UIImagePickerControllerDelegate, UINavigationContro
                    if let originalImage = info[UIImagePickerController.InfoKey.originalImage] as? UIImage, let imageData = originalImage.jpegData(compressionQuality: 1.0) {
                     addView.imageView.image = originalImage
                     mediaData = imageData
+                    videoURL = nil
                    }
                    
                case  "public.movie":
                    if let mediaURL = info[UIImagePickerController.InfoKey.mediaURL] as? URL,
                        let image = mediaURL.videoPreviewThumbnail(), let imageData = image.jpegData(compressionQuality: 1.0) {
                     addView.imageView.image = image
+                    videoURL = mediaURL
                     mediaData = imageData
                    }
                default:

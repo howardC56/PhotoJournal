@@ -10,6 +10,7 @@ import Foundation
 
 struct  PhotoObject: Codable & Equatable {
       let imageData: Data
+      let videoData: Data?
       let description: String
       let date: Date
       let title: String
