@@ -24,6 +24,7 @@ final class MainCollectionViewCell: UICollectionViewCell {
         let image = UIImageView()
         image.clipsToBounds = true
         image.layer.cornerRadius = 10
+        image.backgroundColor = .white
         image.image = UIImage(systemName: "photo")
         return image
     }()
@@ -38,6 +39,8 @@ final class MainCollectionViewCell: UICollectionViewCell {
         let label = UILabel()
         label.font = .systemFont(ofSize: 14)
         label.textAlignment = .center
+        label.textColor = .black
+        label.backgroundColor = .white
         label.adjustsFontSizeToFitWidth = true
         label.numberOfLines = 0
         label.layer.borderWidth = 0.5
@@ -52,6 +55,8 @@ final class MainCollectionViewCell: UICollectionViewCell {
         label.font = .boldSystemFont(ofSize: 18)
         label.adjustsFontSizeToFitWidth = true
         label.textAlignment = .center
+        label.textColor = .black
+        label.backgroundColor = .white
         label.numberOfLines = 0
         label.text = "Test"
         return label

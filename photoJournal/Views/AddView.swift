@@ -47,6 +47,8 @@ final class AddView: UIView {
     
     private lazy var descriptionLabel: UILabel = {
         let label = UILabel()
+        label.textColor = .black
+        label.backgroundColor = .white
         label.text = "Description:"
         return label
     }()
@@ -55,6 +57,8 @@ final class AddView: UIView {
         let label = UITextView()
         label.layer.borderWidth = 0.5
         label.layer.cornerRadius = 10
+        label.textColor = .black
+        label.backgroundColor = .white
         label.font = .systemFont(ofSize: 15)
         label.layer.borderColor = UIColor.black.cgColor
         label.textContainerInset = UIEdgeInsets(top: 0, left: 10, bottom: 0, right: 10)
@@ -65,6 +69,8 @@ final class AddView: UIView {
         let label = UITextField()
         label.layer.cornerRadius = 10
         label.layer.borderWidth = 0.5
+        label.textColor = .black
+        label.backgroundColor = .white
         label.layer.borderColor = UIColor.black.cgColor
         label.font = .boldSystemFont(ofSize: 18)
         label.adjustsFontSizeToFitWidth = true
