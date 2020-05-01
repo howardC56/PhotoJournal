@@ -21,11 +21,17 @@ final class MainCollectionViewCell: UICollectionViewCell {
     var player: AVPlayer?
     var playing = false
     
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        playing = false
+        player = nil
+    }
+    
     public lazy var imageView: UIImageView = {
         let image = UIImageView()
         image.clipsToBounds = true
         image.layer.cornerRadius = 10
-        image.backgroundColor = .white
+        image.backgroundColor = .clear
         image.image = UIImage(systemName: "photo")
         return image
     }()
